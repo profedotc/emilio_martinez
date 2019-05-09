@@ -2,84 +2,138 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void gol_init(/* Recibo un mundo */);
-void gol_print(/* Recibo un mundo */);
-void gol_step(/* Recibo dos mundos */);
-int gol_count_neighbors(/* Recibo un mundo y unas coordenadas */);
-bool gol_get_cell(/* Recibo un mundo y unas coordenadas */);
-void gol_copy(/* Recibo dos mundos */);
+#define SIZE 4
+
+void gol_init(int world[][SIZE], int world2[][SIZE]);
+void gol_print(int world[][SIZE]);
+void gol_step(int world[][SIZE], int world2[][SIZE]);
+int gol_count_neighbors(int world[][SIZE], int i, int j);
+bool gol_get_cell(int world[][SIZE], int i, int j);
+void gol_copy(int world[][SIZE], int world2[][SIZE]);
 
 int main()
 {
-	int i = 0;
-	// TODO: Declara dos mundos
+	int it = 0;
+	int world[SIZE][SIZE], world2[SIZE][SIZE];
+	gol_init(world, world2);
 
-	// TODO: inicializa el mundo
-	do {
-		printf("\033cIteration %d\n", i++);
-		// TODO: Imprime el mundo
-		// TODO: Itera
+	do
+	{
+		printf("\033cIteration %d\n", it);
+		gol_print(world);
+
+		gol_step(world, world2);
+		gol_copy(world2, world);
+		++it;
 	} while (getchar() != 'q');
 
 	return EXIT_SUCCESS;
 }
 
-void gol_init(/* Recibo un mundo */)
+void gol_init(int world[][SIZE], int world2[][SIZE])
 {
-	// TODO: Poner el mundo a false
-
-	/* TODO: Inicializar con el patrón del glider:
-	 *           . # .
-	 *           . . #
-	 *           # # #
-	 */
+	for (int i = 0; i < SIZE; i++)
+	{
+		for (int j = 0; j < SIZE; j++)
+		{
+			world[i][j] = false;
+			world2[i][j] = false;
+		}
+		world[1][0] = true;
+		world[1][1] = true;
+		world[1][2] = true;
+	}
 }
 
-void gol_print(/* Recibo un mundo */)
+void gol_print(int world[][SIZE])
 {
-	// TODO: Imprimir el mundo por consola. Sugerencia:
-	/*
-	 *     . # . . . . . . . .
-	 *     . . # . . . . . . .
-	 *     # # # . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 */
+	for (int i = 0; i < SIZE; i++)
+	{
+		for (int j = 0; j < SIZE; j++)
+		{
+			printf("%c", world[i][j] == true ? '#' : '.');
+		}
+		printf("\n");
+	}
 }
 
-void gol_step(/* Recibo dos mundos */)
+void gol_step(int world[][SIZE], int world2[][SIZE])
 {
-	/*
-	 * TODO:
-	 * - Recorrer el mundo célula por célula comprobando si nace, sobrevive
-	 *   o muere.
-	 *
-	 * - No se puede cambiar el estado del mundo a la vez que se recorre:
-	 *   Usar un mundo auxiliar para guardar el siguiente estado.
-	 *
-	 * - Copiar el mundo auxiliar sobre el mundo principal
-	 */
+	for (int i = 0; i < SIZE; i++)
+	{
+		for (int j = 0; j < SIZE; j++)
+		{
+			world2[i][j] = gol_get_cell(world, i, j);
+		}
+	}
 }
 
-int gol_count_neighbors(/* Recibo un mundo y unas coordenadas */)
+bool gol_get_cell(int world[][SIZE], int i, int j)
 {
-	// Devuelve el número de vecinos
+	bool isAlive;
+	int alives_neighbors = gol_count_neighbors(world, i, j);
+	if (world[i][j])
+	{
+		if (alives_neighbors == 2 || alives_neighbors == 3)
+		{
+			isAlive = true;
+		}
+		else
+		{
+			isAlive = false;
+		}
+	}
+	else
+	{
+		if (alives_neighbors == 3)
+		{
+			isAlive = true;
+		}
+		else
+		{
+			isAlive = false;
+		}
+	}
+	return isAlive;
 }
 
-bool gol_get_cell(/* Recibo un mundo y unas coordenadas */)
+int gol_count_neighbors(int world[][SIZE], int i, int j)
 {
-	/*
-	 * TODO: Devuelve el estado de la célula de posición indicada
-	 * (¡cuidado con los límites del array!)
-	 */
+	int count_neighbors = 0;
+	for (int x = i - 1; x < i + 2; x++)
+	{
+		for (int y = j - 1; y < j + 2; y++)
+		{
+			if (x > -1 && y > -1 && x < SIZE && y < SIZE)
+			{
+				if (world[x][y])
+				{
+					if (x == i && y != j)
+					{
+						count_neighbors++;
+					}
+					else if (x != i && y == j)
+					{
+						count_neighbors++;
+					}
+					else if (x != y && y != j)
+					{
+						count_neighbors++;
+					}
+				}
+			}
+		}
+	}
+	return count_neighbors;
 }
 
-void gol_copy(/* Recibo dos mundos */)
+void gol_copy(int world[][SIZE], int world2[][SIZE])
 {
-	// TODO: copia el mundo segundo mundo sobre el primero
+	for (int i = 0; i < SIZE; i++)
+	{
+		for (int j = 0; j < SIZE; j++)
+		{
+			world2[i][j] = world[i][j];
+		}
+	}
 }
