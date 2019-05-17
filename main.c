@@ -4,7 +4,7 @@
 
 #define SIZE 4
 
-void gol_init(int world[][SIZE], int world2[][SIZE]);
+void gol_init(int world[][SIZE]);
 void gol_print(int world[][SIZE]);
 void gol_step(int world[][SIZE], int world2[][SIZE]);
 int gol_count_neighbors(int world[][SIZE], int i, int j);
@@ -15,7 +15,8 @@ int main()
 {
 	int it = 0;
 	int world[SIZE][SIZE], world2[SIZE][SIZE];
-	gol_init(world, world2);
+	gol_init(world);
+	gol_init(world2);
 
 	do
 	{
@@ -30,19 +31,18 @@ int main()
 	return EXIT_SUCCESS;
 }
 
-void gol_init(int world[][SIZE], int world2[][SIZE])
+void gol_init(int world[][SIZE])
 {
 	for (int i = 0; i < SIZE; i++)
 	{
 		for (int j = 0; j < SIZE; j++)
 		{
 			world[i][j] = false;
-			world2[i][j] = false;
 		}
-		world[1][0] = true;
-		world[1][1] = true;
-		world[1][2] = true;
 	}
+	world[1][0] = true;
+	world[1][1] = true;
+	world[1][2] = true;
 }
 
 void gol_print(int world[][SIZE])
@@ -51,7 +51,7 @@ void gol_print(int world[][SIZE])
 	{
 		for (int j = 0; j < SIZE; j++)
 		{
-			printf("%c", world[i][j] == true ? '#' : '.');
+			printf("%c", world[i][j] ? '#' : '.');
 		}
 		printf("\n");
 	}
@@ -63,38 +63,31 @@ void gol_step(int world[][SIZE], int world2[][SIZE])
 	{
 		for (int j = 0; j < SIZE; j++)
 		{
-			world2[i][j] = gol_get_cell(world, i, j);
+			int alives_neighbors = gol_count_neighbors(world, i, j);
+			if (world[i][j] && (alives_neighbors < 2 || alives_neighbors > 3))
+			{
+				world2[i][j] = 0;
+			}
+			if (!world[i][j] && alives_neighbors == 3)
+			{
+				world2[i][j] = 1;
+			}
 		}
 	}
 }
 
 bool gol_get_cell(int world[][SIZE], int i, int j)
 {
-	bool isAlive;
-	int alives_neighbors = gol_count_neighbors(world, i, j);
-	if (world[i][j])
+	int cell;
+	if (i >= 0 && j >= 0 && i < SIZE && j < SIZE)
 	{
-		if (alives_neighbors == 2 || alives_neighbors == 3)
-		{
-			isAlive = true;
-		}
-		else
-		{
-			isAlive = false;
-		}
+		cell = world[i][j];
 	}
 	else
 	{
-		if (alives_neighbors == 3)
-		{
-			isAlive = true;
-		}
-		else
-		{
-			isAlive = false;
-		}
+		cell = 0;
 	}
-	return isAlive;
+	return cell;
 }
 
 int gol_count_neighbors(int world[][SIZE], int i, int j)
@@ -104,22 +97,11 @@ int gol_count_neighbors(int world[][SIZE], int i, int j)
 	{
 		for (int y = j - 1; y < j + 2; y++)
 		{
-			if (x > -1 && y > -1 && x < SIZE && y < SIZE)
+			if (gol_get_cell(world, x, y))
 			{
-				if (world[x][y])
+				if (x == i && y != j || x != i && y == j || x != i && y != j)
 				{
-					if (x == i && y != j)
-					{
-						count_neighbors++;
-					}
-					else if (x != i && y == j)
-					{
-						count_neighbors++;
-					}
-					else if (x != y && y != j)
-					{
-						count_neighbors++;
-					}
+					count_neighbors++;
 				}
 			}
 		}
