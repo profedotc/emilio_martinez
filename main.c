@@ -25,7 +25,6 @@ int main()
 		gol_step(world, selected_world);
 		++it;
 		selected_world = !selected_world;
-		printf("%d", selected_world);
 	} while (getchar() != 'q');
 
 	return EXIT_SUCCESS;
