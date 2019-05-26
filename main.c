@@ -6,18 +6,15 @@
 int main()
 {
 	int it = 0;
-	int selected_world = 0;
-	int world[2][SIZE][SIZE];
-	gol_init(world);
-
+	struct gol *g;
+	gol_init(g);
 	do
 	{
 		printf("\033cIteration %d\n", it);
-		gol_print(world, selected_world);
+		gol_print(g);
 
-		gol_step(world, selected_world);
+		gol_step(g);
 		++it;
-		selected_world = !selected_world;
 	} while (getchar() != 'q');
 
 	return EXIT_SUCCESS;
