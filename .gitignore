@@ -1,0 +1,5 @@
+# Se ignora cualquier ficher ejecutable
+*.o
+
+# se ignora fichero exec
+exec
