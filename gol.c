@@ -14,9 +14,9 @@ void gol_init(struct gol *g)
         g->worlds[k][i][j] = false;
       }
     }
-    g->worlds[k][1][0] = true;
-    g->worlds[k][1][1] = true;
-    g->worlds[k][1][2] = true;
+    g->worlds[0][1][0] = true;
+    g->worlds[0][1][1] = true;
+    g->worlds[0][1][2] = true;
   }
   g->current_world = 0;
 }
@@ -46,9 +46,17 @@ void gol_step(struct gol *g)
       {
         g->worlds[other_world][i][j] = 0;
       }
-      if (!(g->worlds[g->current_world][i][j]) && alives_neighbors == 3)
+      else if (g->worlds[g->current_world][i][j] && (alives_neighbors == 2 || alives_neighbors == 3))
       {
         g->worlds[other_world][i][j] = 1;
+      }
+      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors == 3)
+      {
+        g->worlds[other_world][i][j] = 1;
+      }
+      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors != 3)
+      {
+        g->worlds[other_world][i][j] = 0;
       }
     }
   }
