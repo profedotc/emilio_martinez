@@ -17,5 +17,6 @@ int main()
 		++it;
 	} while (getchar() != 'q');
 
+	gol_free(g);
 	return EXIT_SUCCESS;
 }
