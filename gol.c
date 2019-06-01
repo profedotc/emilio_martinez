@@ -2,6 +2,52 @@
 #include <stdbool.h>
 #include "gol.h"
 
+static bool get_cell(struct gol *g, int i, int j);
+static int count_neighbors(struct gol *g, int i, int j);
+
+void gol_init(struct gol *g)
+{
+  for (int i = 0; i < SIZE; i++)
+  {
+    for (int j = 0; j < SIZE; j++)
+    {
+      g->worlds[0][i][j] = false;
+    }
+  }
+  g->worlds[0][1][0] = true;
+  g->worlds[0][1][1] = true;
+  g->worlds[0][1][2] = true;
+  g->current_world = 0;
+}
+
+void gol_print(struct gol *g)
+{
+
+  for (int i = 0; i < SIZE; i++)
+  {
+    for (int j = 0; j < SIZE; j++)
+    {
+      printf("%c", g->worlds[g->current_world][i][j] ? '#' : '.');
+    }
+    printf("\n");
+  }
+}
+
+void gol_step(struct gol *g)
+{
+  int other_world = !g->current_world;
+  for (int i = 0; i < SIZE; i++)
+  {
+    for (int j = 0; j < SIZE; j++)
+    {
+      int alives_neighbors = count_neighbors(g, i, j);
+      g->worlds[other_world][i][j] =
+          (g->worlds[g->current_world][i][j] && alives_neighbors == 2) || alives_neighbors == 3;
+    }
+  }
+  g->current_world = !g->current_world;
+}
+
 static bool get_cell(struct gol *g, int i, int j)
 {
   int cell;
@@ -33,65 +79,4 @@ static int count_neighbors(struct gol *g, int i, int j)
     }
   }
   return count_neighbors;
-}
-
-void gol_init(struct gol *g)
-{
-  for (int k = 0; k < 2; k++)
-  {
-
-    for (int i = 0; i < SIZE; i++)
-    {
-      for (int j = 0; j < SIZE; j++)
-      {
-        g->worlds[k][i][j] = false;
-      }
-    }
-    g->worlds[0][1][0] = true;
-    g->worlds[0][1][1] = true;
-    g->worlds[0][1][2] = true;
-  }
-  g->current_world = 0;
-}
-
-void gol_print(struct gol *g)
-{
-
-  for (int i = 0; i < SIZE; i++)
-  {
-    for (int j = 0; j < SIZE; j++)
-    {
-      printf("%c", g->worlds[g->current_world][i][j] ? '#' : '.');
-    }
-    printf("\n");
-  }
-}
-
-void gol_step(struct gol *g)
-{
-  int other_world = !g->current_world;
-  for (int i = 0; i < SIZE; i++)
-  {
-    for (int j = 0; j < SIZE; j++)
-    {
-      int alives_neighbors = count_neighbors(g, i, j);
-      if (g->worlds[g->current_world][i][j] && (alives_neighbors < 2 || alives_neighbors > 3))
-      {
-        g->worlds[other_world][i][j] = 0;
-      }
-      else if (g->worlds[g->current_world][i][j] && (alives_neighbors == 2 || alives_neighbors == 3))
-      {
-        g->worlds[other_world][i][j] = 1;
-      }
-      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors == 3)
-      {
-        g->worlds[other_world][i][j] = 1;
-      }
-      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors != 3)
-      {
-        g->worlds[other_world][i][j] = 0;
-      }
-    }
-  }
-  g->current_world = !g->current_world;
 }
