@@ -1,4 +1,4 @@
-# Se ignora cualquier ficher ejecutable
+# Se ignoran compilaciones intermedias
 *.o
 
 # se ignora fichero exec

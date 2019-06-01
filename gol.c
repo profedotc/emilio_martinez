@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "gol.h"
 
-void gol_init(int world[][SIZE][SIZE])
+void gol_init(struct gol *g)
 {
   for (int k = 0; k < 2; k++)
   {
@@ -11,54 +11,64 @@ void gol_init(int world[][SIZE][SIZE])
     {
       for (int j = 0; j < SIZE; j++)
       {
-        world[k][i][j] = false;
+        g->worlds[k][i][j] = false;
       }
     }
-    world[k][1][0] = true;
-    world[k][1][1] = true;
-    world[k][1][2] = true;
+    g->worlds[0][1][0] = true;
+    g->worlds[0][1][1] = true;
+    g->worlds[0][1][2] = true;
   }
+  g->current_world = 0;
 }
 
-void gol_print(int world[][SIZE][SIZE], int selected_world)
+void gol_print(struct gol *g)
 {
 
   for (int i = 0; i < SIZE; i++)
   {
     for (int j = 0; j < SIZE; j++)
     {
-      printf("%c", world[selected_world][i][j] ? '#' : '.');
+      printf("%c", g->worlds[g->current_world][i][j] ? '#' : '.');
     }
     printf("\n");
   }
 }
 
-void gol_step(int world[][SIZE][SIZE], int selected_world)
+void gol_step(struct gol *g)
 {
-  int other_world = !selected_world;
+  int other_world = !g->current_world;
   for (int i = 0; i < SIZE; i++)
   {
     for (int j = 0; j < SIZE; j++)
     {
-      int alives_neighbors = gol_count_neighbors(world, i, j, selected_world);
-      if (world[selected_world][i][j] && (alives_neighbors < 2 || alives_neighbors > 3))
+      int alives_neighbors = gol_count_neighbors(g, i, j);
+      if (g->worlds[g->current_world][i][j] && (alives_neighbors < 2 || alives_neighbors > 3))
       {
-        world[other_world][i][j] = 0;
+        g->worlds[other_world][i][j] = 0;
       }
-      if (!world[selected_world][i][j] && alives_neighbors == 3)
+      else if (g->worlds[g->current_world][i][j] && (alives_neighbors == 2 || alives_neighbors == 3))
       {
-        world[other_world][i][j] = 1;
+        g->worlds[other_world][i][j] = 1;
+      }
+      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors == 3)
+      {
+        g->worlds[other_world][i][j] = 1;
+      }
+      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors != 3)
+      {
+        g->worlds[other_world][i][j] = 0;
       }
     }
   }
+  g->current_world = !g->current_world;
 }
 
-bool gol_get_cell(int world[][SIZE][SIZE], int i, int j, int selected_world)
+bool gol_get_cell(struct gol *g, int i, int j)
 {
   int cell;
   if (i >= 0 && j >= 0 && i < SIZE && j < SIZE)
   {
-    cell = world[selected_world][i][j];
+    cell = g->worlds[g->current_world][i][j];
   }
   else
   {
@@ -67,14 +77,14 @@ bool gol_get_cell(int world[][SIZE][SIZE], int i, int j, int selected_world)
   return cell;
 }
 
-int gol_count_neighbors(int world[][SIZE][SIZE], int i, int j, int selected_world)
+int gol_count_neighbors(struct gol *g, int i, int j)
 {
   int count_neighbors = 0;
   for (int x = i - 1; x < i + 2; x++)
   {
     for (int y = j - 1; y < j + 2; y++)
     {
-      if (gol_get_cell(world, x, y, selected_world))
+      if (gol_get_cell(g, x, y))
       {
         if (x == i && y != j || x != i && y == j || x != i && y != j)
         {

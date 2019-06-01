@@ -3,10 +3,16 @@
 
 #define SIZE 4
 
-void gol_init(int world[][SIZE][SIZE]);
-void gol_print(int world[][SIZE][SIZE], int selected_world);
-void gol_step(int world[][SIZE][SIZE], int selected_world);
-int gol_count_neighbors(int world[][SIZE][SIZE], int i, int j, int selected_world);
-bool gol_get_cell(int world[][SIZE][SIZE], int i, int j, int selected_world);
+struct gol
+{
+  bool worlds[2][SIZE][SIZE];
+  bool current_world;
+};
+
+void gol_init(struct gol *g);
+void gol_print(struct gol *g);
+void gol_step(struct gol *g);
+int gol_count_neighbors(struct gol *g, int i, int j);
+bool gol_get_cell(struct gol *g, int i, int j);
 
 #endif
