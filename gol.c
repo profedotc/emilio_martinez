@@ -2,22 +2,21 @@
 #include <stdbool.h>
 #include "gol.h"
 
+static bool get_cell(struct gol *g, int i, int j);
+static int count_neighbors(struct gol *g, int i, int j);
+
 void gol_init(struct gol *g)
 {
-  for (int k = 0; k < 2; k++)
+  for (int i = 0; i < SIZE; i++)
   {
-
-    for (int i = 0; i < SIZE; i++)
+    for (int j = 0; j < SIZE; j++)
     {
-      for (int j = 0; j < SIZE; j++)
-      {
-        g->worlds[k][i][j] = false;
-      }
+      g->worlds[0][i][j] = false;
     }
-    g->worlds[0][1][0] = true;
-    g->worlds[0][1][1] = true;
-    g->worlds[0][1][2] = true;
   }
+  g->worlds[0][1][0] = true;
+  g->worlds[0][1][1] = true;
+  g->worlds[0][1][2] = true;
   g->current_world = 0;
 }
 
@@ -41,29 +40,15 @@ void gol_step(struct gol *g)
   {
     for (int j = 0; j < SIZE; j++)
     {
-      int alives_neighbors = gol_count_neighbors(g, i, j);
-      if (g->worlds[g->current_world][i][j] && (alives_neighbors < 2 || alives_neighbors > 3))
-      {
-        g->worlds[other_world][i][j] = 0;
-      }
-      else if (g->worlds[g->current_world][i][j] && (alives_neighbors == 2 || alives_neighbors == 3))
-      {
-        g->worlds[other_world][i][j] = 1;
-      }
-      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors == 3)
-      {
-        g->worlds[other_world][i][j] = 1;
-      }
-      else if (!(g->worlds[g->current_world][i][j]) && alives_neighbors != 3)
-      {
-        g->worlds[other_world][i][j] = 0;
-      }
+      int alives_neighbors = count_neighbors(g, i, j);
+      g->worlds[other_world][i][j] =
+          (g->worlds[g->current_world][i][j] && alives_neighbors == 2) || alives_neighbors == 3;
     }
   }
   g->current_world = !g->current_world;
 }
 
-bool gol_get_cell(struct gol *g, int i, int j)
+static bool get_cell(struct gol *g, int i, int j)
 {
   int cell;
   if (i >= 0 && j >= 0 && i < SIZE && j < SIZE)
@@ -77,14 +62,14 @@ bool gol_get_cell(struct gol *g, int i, int j)
   return cell;
 }
 
-int gol_count_neighbors(struct gol *g, int i, int j)
+static int count_neighbors(struct gol *g, int i, int j)
 {
   int count_neighbors = 0;
   for (int x = i - 1; x < i + 2; x++)
   {
     for (int y = j - 1; y < j + 2; y++)
     {
-      if (gol_get_cell(g, x, y))
+      if (get_cell(g, x, y))
       {
         if (x == i && y != j || x != i && y == j || x != i && y != j)
         {
