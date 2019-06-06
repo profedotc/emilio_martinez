@@ -4,5 +4,5 @@
 # se ignora fichero exec
 exec
 
-# se ignora exec_debug
-exec_debug
+# se ignora gol
+gol
