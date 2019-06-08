@@ -1,16 +1,18 @@
 #ifndef _GOL_H
 #define _GOL_H_
 
-#define SIZE 4
+#define ROWS 10
+#define COLS 10
 
 struct gol
 {
-  bool worlds[2][SIZE][SIZE];
-  bool current_world;
+  bool **worlds[2];
 };
 
-void gol_init(struct gol *g);
-void gol_print(struct gol *g);
-void gol_step(struct gol *g);
+void gol_init(struct gol *g, const int rows, const int cols);
+void gol_print(const struct gol *g, const int rows, const int cols);
+void gol_step(struct gol *g, const int rows, const int cols);
+void gol_alloc(struct gol *g, const int rows, const int cols);
+void gol_free(struct gol *g, const int cols);
 
 #endif

@@ -3,3 +3,6 @@
 
 # se ignora fichero exec
 exec
+
+# se ignora gol
+gol
