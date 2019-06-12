@@ -1,9 +1,6 @@
 #ifndef _GOL_H
 #define _GOL_H_
 
-#define ROWS 10
-#define COLS 10
-
 struct gol
 {
   bool **worlds[2];

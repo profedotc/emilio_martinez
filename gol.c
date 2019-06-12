@@ -16,7 +16,7 @@ void gol_alloc(struct gol *g, const int rows, const int cols)
 {
   g->worlds[CURRENT] = (bool **)malloc(rows * sizeof(bool *));
   g->worlds[NEXT] = (bool **)malloc(rows * sizeof(bool *));
-  for (int i = 0; i < cols; i++)
+  for (int i = 0; i < rows; i++)
   {
     g->worlds[CURRENT][i] = (bool *)malloc(cols * sizeof(bool));
     g->worlds[NEXT][i] = (bool *)malloc(cols * sizeof(bool));

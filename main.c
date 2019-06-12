@@ -3,6 +3,9 @@
 #include <stdbool.h>
 #include "gol.h"
 
+#define ROWS 5
+#define COLS 10
+
 int main()
 {
 	int it = 0;
@@ -18,6 +21,6 @@ int main()
 		++it;
 	} while (getchar() != 'q');
 
-	gol_free(&g, COLS);
+	gol_free(&g, ROWS);
 	return EXIT_SUCCESS;
 }
