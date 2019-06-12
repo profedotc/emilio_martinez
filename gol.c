@@ -9,10 +9,10 @@ enum world_state
   NEXT = 1,
 };
 
-static bool get_cell(const struct gol *g, const int i, const int j, const int rows, const int cols);
-static int count_neighbors(const struct gol *g, const int i, const int j, const int rows, const int cols);
+static bool get_cell(const struct gol *g, int i, int j, int rows, int cols);
+static int count_neighbors(const struct gol *g, int i, int j, int rows, int cols);
 
-void gol_alloc(struct gol *g, const int rows, const int cols)
+void gol_alloc(struct gol *g, int rows, int cols)
 {
   g->worlds[CURRENT] = (bool **)malloc(rows * sizeof(bool *));
   g->worlds[NEXT] = (bool **)malloc(rows * sizeof(bool *));
@@ -22,7 +22,7 @@ void gol_alloc(struct gol *g, const int rows, const int cols)
     g->worlds[NEXT][i] = (bool *)malloc(cols * sizeof(bool));
   }
 }
-void gol_free(struct gol *g, const int cols)
+void gol_free(struct gol *g, int cols)
 {
   for (int i = 0; i < cols; i++)
   {
@@ -33,7 +33,7 @@ void gol_free(struct gol *g, const int cols)
   free(g->worlds[CURRENT]);
 }
 
-void gol_init(struct gol *g, const int rows, const int cols)
+void gol_init(struct gol *g, int rows, int cols)
 {
   for (int i = 0; i < rows; i++)
   {
@@ -47,7 +47,7 @@ void gol_init(struct gol *g, const int rows, const int cols)
   g->worlds[CURRENT][1][2] = true;
 }
 
-void gol_print(const struct gol *g, const int rows, const int cols)
+void gol_print(const struct gol *g, int rows, int cols)
 {
 
   for (int i = 0; i < rows; i++)
@@ -60,7 +60,7 @@ void gol_print(const struct gol *g, const int rows, const int cols)
   }
 }
 
-void gol_step(struct gol *g, const int rows, const int cols)
+void gol_step(struct gol *g, int rows, int cols)
 {
   for (int i = 0; i < rows; i++)
   {
@@ -90,7 +90,7 @@ void gol_step(struct gol *g, const int rows, const int cols)
   g->worlds[NEXT] = aux_array;
 }
 
-static bool get_cell(const struct gol *g, const int i, const int j, const int rows, const int cols)
+static bool get_cell(const struct gol *g, int i, int j, int rows, int cols)
 {
   int cell = 0;
   if (i >= 0 && j >= 0 && i < rows && j < cols)
@@ -100,7 +100,7 @@ static bool get_cell(const struct gol *g, const int i, const int j, const int ro
   return cell;
 }
 
-static int count_neighbors(const struct gol *g, const int i, const int j, const int rows, const int cols)
+static int count_neighbors(const struct gol *g, int i, int j, int rows, int cols)
 {
   int count_neighbors = -get_cell(g, i, j, rows, cols);
   for (int x = i - 1; x < i + 2; x++)
