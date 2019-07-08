@@ -12,7 +12,11 @@ int main()
 	struct gol g;
 	g.size_x = ROWS;
 	g.size_y = COLS;
-	gol_alloc(&g);
+	if (!gol_alloc(&g))
+	{
+		printf("Allocating memory error\n");
+		return false;
+	}
 	gol_init(&g);
 	do
 	{
