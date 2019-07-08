@@ -10,17 +10,19 @@ int main()
 {
 	int it = 0;
 	struct gol g;
-	gol_alloc(&g, ROWS, COLS);
-	gol_init(&g, ROWS, COLS);
+	g.size_x = ROWS;
+	g.size_y = COLS;
+	gol_alloc(&g);
+	gol_init(&g);
 	do
 	{
 		printf("\033cIteration %d\n", it);
-		gol_print(&g, ROWS, COLS);
+		gol_print(&g);
 
-		gol_step(&g, ROWS, COLS);
+		gol_step(&g);
 		++it;
 	} while (getchar() != 'q');
 
-	gol_free(&g, ROWS);
+	gol_free(&g);
 	return EXIT_SUCCESS;
 }
