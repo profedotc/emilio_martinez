@@ -3,7 +3,7 @@
 
 struct gol
 {
-  bool **worlds[2];
+  bool *worlds[2];
   int size_x;
   int size_y;
 };
