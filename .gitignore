@@ -6,3 +6,6 @@ exec
 
 # se ignora gol
 gol
+
+# se ignora gol_test
+gol_test
